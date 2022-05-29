@@ -34,56 +34,56 @@ searchQuery = rawSearchQuery.replace(' ', '+')
 searchPosts = pd.DataFrame()
 #beforePostId = ''
 
-for i in np.arange(1):
-    res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery + '&sort=new', 
-                 headers = headers, params = {'limit': '100'})
+# for i in np.arange(1):
+#     res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery + '&sort=new', 
+#                  headers = headers, params = {'limit': '100'})
     
-    subreddit = np.array([])
-    title = np.array([])
-    contents = np.array([])
-    id = np.array([])
+#     subreddit = np.array([])
+#     title = np.array([])
+#     contents = np.array([])
+#     id = np.array([])
     
-    for post in res.json()['data']['children']:
-        subreddit = np.append(subreddit, post['data']['subreddit'])
-        title = np.append(title, post['data']['title'])
-        contents = np.append(contents, post['data']['selftext'])
-        id = np.append(id, post['kind'] + '_' + post['data']['id'])
+#     for post in res.json()['data']['children']:
+#         subreddit = np.append(subreddit, post['data']['subreddit'])
+#         title = np.append(title, post['data']['title'])
+#         contents = np.append(contents, post['data']['selftext'])
+#         id = np.append(id, post['kind'] + '_' + post['data']['id'])
                 
-    oneRun = pd.DataFrame().assign(
-        subreddit = subreddit,
-        title = title,
-        contents = contents,
-        id = id
-    )
+#     oneRun = pd.DataFrame().assign(
+#         subreddit = subreddit,
+#         title = title,
+#         contents = contents,
+#         id = id
+#     )
     
-    searchPosts = pd.concat([searchPosts, oneRun], axis=0)
+#     searchPosts = pd.concat([searchPosts, oneRun], axis=0)
     
-    #beforePostId = '\'' + id[-1] + '\''
+#     #beforePostId = '\'' + id[-1] + '\''
     
 
-#res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery + '&sort=new', 
-#                 headers = headers, params = {'limit': '100', 'before': ''})
+res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery + '&sort=new', 
+                headers = headers, params = {'limit': '100', 'before': ''})
 
 #res = requests.get('https://www.reddit.com/r/mechmarket/search.json?q=' + searchQuery, 
 #                 headers = headers, params = {'limit': '100'})
 
 #empty array to assign to DataFrame
-# subreddit = np.array([])
-# title = np.array([])
-# contents = np.array([])
+subreddit = np.array([])
+title = np.array([])
+contents = np.array([])
 
-# #loop through the response data for subreddit, title, and contents of post
-# for post in res.json()['data']['children']:
-#     subreddit = np.append(subreddit, post['data']['subreddit'])
-#     title = np.append(title, post['data']['title'])
-#     contents = np.append(contents, post['data']['selftext'])
+#loop through the response data for subreddit, title, and contents of post
+for post in res.json()['data']['children']:
+    subreddit = np.append(subreddit, post['data']['subreddit'])
+    title = np.append(title, post['data']['title'])
+    contents = np.append(contents, post['data']['selftext'])
     
-# #assign arrays to columns of the DataFrame
-# searchPosts = pd.DataFrame().assign(
-#     subreddit = subreddit,
-#     title = title,
-#     contents = contents
-# )
+#assign arrays to columns of the DataFrame
+searchPosts = pd.DataFrame().assign(
+    subreddit = subreddit,
+    title = title,
+    contents = contents
+)
 
 #filter posts to only include posts from r/mechmarket
 searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
