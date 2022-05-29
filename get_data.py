@@ -32,7 +32,10 @@ rawSearchQuery = input('Enter search query: ')
 searchQuery = rawSearchQuery.replace(' ', '+')
 
 res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery, 
-                 headers = headers, params = {'limit': '100'})
+                 headers = headers, params = {'limit': '200'})
+
+#res = requests.get('https://www.reddit.com/r/mechmarket/search.json?q=' + searchQuery, 
+#                 headers = headers, params = {'limit': '100'})
 
 #empty array to assign to DataFrame
 subreddit = np.array([])
@@ -54,3 +57,6 @@ searchPosts = pd.DataFrame().assign(
 
 #put data in a csv file
 searchPosts.to_csv('data/' + rawSearchQuery + '.csv')
+
+#filter posts to only include posts from r/mechmarket
+searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
