@@ -1,7 +1,8 @@
 import requests
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+import re
+import plotly.express as px
 
 #get client id, secret key, and password from files in keys/
 with open('keys/client_id.txt', 'r') as f:
@@ -60,3 +61,6 @@ searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
 
 #put data in a csv file
 searchPosts.to_csv('data/' + rawSearchQuery + '.csv')
+
+print(re.findall(r'(https?://\S+)', searchPosts.get('contents').iloc[1]))
+#print(re.findall(r'^\[$\]', searchPosts.get('title').iloc[1]))
