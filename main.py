@@ -59,15 +59,27 @@ searchPosts = pd.DataFrame().assign(
 #filter posts to only include posts from r/mechmarket
 searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
 
-#create function to extract location from title
+#function to extract location from title
 def getLocation(title):
-    return re.findall(r'\[(.*?)\]', title)[0]
-
+    try: 
+        toReturn = re.findall(r'\[(.*?)\]', title)[0]
+    except: 
+        toReturn = ''
+    return toReturn
+#function to extract have, returns a list of comma separated items
 def getHave(title):
-    return re.findall(r'H\](.*?)\[', title)
-
+    try: 
+        toReturn = re.findall(r'H\](.*?)\[', title)[0].strip().split(',')
+    except: 
+        toReturn = ''
+    return toReturn
+#function to extract want, returns a list of comma separated items
 def getWant(title):
-    return re.findall(r'W\](.*)', title)
+    try: 
+        toReturn = re.findall(r'W\](.*)', title)[0].strip().split(',')
+    except: 
+        toReturn = ''
+    return toReturn
 
 #apply function and add new location column
 searchPosts = searchPosts.assign(
