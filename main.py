@@ -59,8 +59,14 @@ searchPosts = pd.DataFrame().assign(
 #filter posts to only include posts from r/mechmarket
 searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
 
+#create function to extract location from title
+def getLocation(title):
+    return re.findall(r'\[(.*?)\]', title)[0]
+
+#apply function and add new location column
+searchPosts = searchPosts.assign(
+    location = searchPosts.get('title').apply(getLocation)
+)
+
 #put data in a csv file
 searchPosts.to_csv('data/' + rawSearchQuery + '.csv')
-
-print(re.findall(r'(https?://\S+)', searchPosts.get('contents').iloc[1]))
-#print(re.findall(r'^\[$\]', searchPosts.get('title').iloc[1]))
