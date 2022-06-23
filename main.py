@@ -33,7 +33,7 @@ headers['Authorization'] = f'bearer {TOKEN}'
 rawSearchQuery = input('Enter search query: ')
 searchQuery = rawSearchQuery.replace(' ', '+')
 
-searchPosts = pd.DataFrame()
+data = pd.DataFrame()
 
 res = requests.get('https://oauth.reddit.com/r/mechmarket/search.json?q=' + searchQuery + '&sort=new', 
                 headers = headers, params = {'limit': '100', 'before': ''})
@@ -50,14 +50,14 @@ for post in res.json()['data']['children']:
     contents = np.append(contents, post['data']['selftext'])
     
 #assign arrays to columns of the DataFrame
-searchPosts = pd.DataFrame().assign(
+data = pd.DataFrame().assign(
     subreddit = subreddit,
     title = title,
     contents = contents
 )
 
 #filter posts to only include posts from r/mechmarket
-searchPosts = searchPosts[searchPosts.get('subreddit') == 'mechmarket']
+data = data[data.get('subreddit') == 'mechmarket']
 
 #function to extract location from title
 def getLocation(title):
@@ -82,11 +82,31 @@ def getWant(title):
     return toReturn
 
 #apply function and add new location column
-searchPosts = searchPosts.assign(
-    location = searchPosts.get('title').apply(getLocation),
-    have = searchPosts.get('title').apply(getHave),
-    want = searchPosts.get('title').apply(getWant)
+data = data.assign(
+    location = data.get('title').apply(getLocation),
+    have = data.get('title').apply(getHave),
+    want = data.get('title').apply(getWant)
 )
 
+#use string split to split country and state from location and create new columns in df
+def getCountry(location):
+    return location.split('-')[0]
+
+def getState(location):
+    try:
+        return location.split('-')[1]
+    except:
+        return ''
+        
+data = data.assign(
+    country = data.get('location').apply(getCountry),
+    state = data.get('location').apply(getState)
+)
+
+'''
+currently, data contains
+columns: subreddit, title, contents, location, have, want, country, state
+'''
+
 #put data in a csv file
-searchPosts.to_csv('data/' + rawSearchQuery + '.csv')
+data.to_csv('data/' + rawSearchQuery + '.csv')
