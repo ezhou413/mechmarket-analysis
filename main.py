@@ -62,24 +62,21 @@ data = data[data.get('subreddit') == 'mechmarket']
 #function to extract location from title
 def getLocation(title):
     try: 
-        toReturn = re.findall(r'\[(.*?)\]', title)[0]
+        return re.findall(r'\[(.*?)\]', title)[0]
     except: 
-        toReturn = ''
-    return toReturn
+        return ''
 #function to extract have, returns a list of comma separated items
 def getHave(title):
     try: 
-        toReturn = re.findall(r'H\](.*?)\[', title)[0].strip().split(',')
+        return re.findall(r'H\](.*?)\[', title)[0].strip().split(',')
     except: 
-        toReturn = ''
-    return toReturn
+        return ''
 #function to extract want, returns a list of comma separated items
 def getWant(title):
     try: 
-        toReturn = re.findall(r'W\](.*)', title)[0].strip().split(',')
+        return re.findall(r'W\](.*)', title)[0].strip().split(',')
     except: 
-        toReturn = ''
-    return toReturn
+        return ''
 
 #apply function and add new location column
 data = data.assign(
@@ -106,6 +103,16 @@ data = data.assign(
 '''
 currently, data contains
 columns: subreddit, title, contents, location, have, want, country, state
+
+todo:
+get products and prices from contents
+collect data on all products appearing from the query and store somewhere
+    still need to determine how to best store data
+make plots using plotly for this data
+figure out what stats to show
+implement an unlikely price filter
+    ie if the price is too high or too low, exclude it on the basis that its probably an error or an outlier
+
 '''
 
 #put data in a csv file
