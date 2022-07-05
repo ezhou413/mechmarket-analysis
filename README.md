@@ -4,7 +4,7 @@
 
 An analysis of the Reddit page r/mechmarket, an online marketplace for custom mechanical keyboards, parts, and services. Users are prompted for a search query, and the program will return relevant insights, with the option to visualize the data. 
 
-Utilizes `pandas` and `numpy` for data storage and processing, and `plotly` for data visualization. 
+Utilizes the Reddit API to retrieve data, `pandas` and `numpy` for data storage and processing, and `plotly` for data visualization. 
 
 ### How To Use
 

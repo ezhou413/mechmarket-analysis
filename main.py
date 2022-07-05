@@ -10,13 +10,13 @@ with open('keys/client_id.txt', 'r') as f:
 with open('keys/secret_key.txt', 'r') as f:
     SECRET_KEY = f.read()
 with open('keys/pw.txt', 'r') as f:
-    pw = f.read()
+    PW = f.read()
     
 #getting access token from reddit
 auth = requests.auth.HTTPBasicAuth(CLIENT_ID, SECRET_KEY)
 
 data = {
-    "grant_type": "password", "username": "evanz711", "password": pw
+    "grant_type": "password", "username": "evanz711", "password": PW
 }
 
 headers = {'User-Agent': 'mechmarketanalysis/0.0.1'}
@@ -100,9 +100,28 @@ data = data.assign(
     state = data.get('location').apply(getState)
 )
 
+#get the contents of each post and put them in a standardized format in a new column
+def cleanContents(contents):
+    return contents.lower()
+
+data = data.assign(
+    cleaned = data.get('contents').apply(cleanContents)
+)
+
+def getLinks(contents):
+    try: 
+        return re.findall(r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+', contents)
+        #need to fix this regex expression
+    except:
+        return []
+    
+data = data.assign(
+    links = data.get('contents').apply(getLinks)
+)
+
 '''
 currently, data contains
-columns: subreddit, title, contents, location, have, want, country, state
+columns: subreddit, title, contents, location, have, want, country, state, cleanedcontents, links
 
 todo:
 get products and prices from contents
@@ -112,6 +131,7 @@ make plots using plotly for this data
 figure out what stats to show
 implement an unlikely price filter
     ie if the price is too high or too low, exclude it on the basis that its probably an error or an outlier
+fix regex expression in line 113, sometimes includes strings that are not links
 
 '''
 
